@@ -1,0 +1,20 @@
+services:
+  dns-soa-audit:
+    build: .
+    image: dns-soa-audit:latest
+    ports:
+      - "8000:8000"
+    environment:
+      SOA_AUDIT_DB: /data/soa_audit.db
+    volumes:
+      - soa_audit_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  soa_audit_data:
